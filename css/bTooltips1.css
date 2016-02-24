@@ -1,0 +1,46 @@
+.m-tooltipsWrapper {
+    position: absolute;
+    background-color: black;
+    color: white;
+    font-family: Microsoft yahei;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+
+    /*width: 100px;*/
+    height: 30px;
+    left: 100px;
+
+    animation: 0.5s appear forwards;
+}
+
+.m-tooltipsWrapper .content {
+    padding: 5px 10px;
+    white-space: nowrap;
+}
+
+.m-tooltipsWrapper .arrow {
+    position: absolute;
+    bottom: -20px;
+    /*width: 10px;*/
+    left: 50%;
+    transform: translateX(-50%);
+    border-top: 10px solid black;
+    border-left: 10px solid rgba(0, 0, 0, 0);
+    border-right: 10px solid rgba(0, 0, 0, 0);
+    border-bottom: 10px solid rgba(0, 0, 0, 0);
+
+    color: red;
+}
+
+@keyframes appear {
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
