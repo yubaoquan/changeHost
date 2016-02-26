@@ -32,3 +32,10 @@
 .m-hosts .item.selected {
     border-color: black;
 }
+
+.m-hostContent {
+    clear: both;
+    padding: 20px;
+    line-height: 20px;
+    font-size: 15px;
+}

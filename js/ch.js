@@ -15,7 +15,8 @@
                       throw err;
                   } else {
                     //   ybq.showTip(`已将当前hosts设置为 ${env} .`);
-                      callback();
+                      console.info(data);
+                      callback(data);
                   }
                 });
             }

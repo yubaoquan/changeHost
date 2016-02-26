@@ -30,13 +30,25 @@
      */
     function onHostsClick(jqItem) {
         var hostName = jqItem.text().substr(6);
-        ybq.setHosts(hostName, function() {
+        ybq.setHosts(hostName, function(configData) {
             ybq.showTip(`已将host切换到${hostName}`);
             selectedHost.removeClass('selected');
             jqItem.addClass('selected');
             selectedHost = jqItem;
+            showHostData(configData);
         });
     }
+
+    /**
+     * 在页面上打印hosts配置
+     */
+     function showHostData(data) {
+         var showArea = $('.m-hostContent');
+         showArea.empty();
+         data.split('\n').forEach(function(item, index) {
+             showArea.append(`<p>${item}</p>`);
+         });
+     }
 
     /**
      * 根据hosts文件第一行的内容判断属于哪个host
@@ -59,6 +71,10 @@
                     selectedHost = item;
                 }
             });
+        });
+        ybq.readFile('C:/Windows/System32/drivers/etc/hosts')
+        .then(function(data) {
+            showHostData(data);
         });
     }
 

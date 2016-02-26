@@ -46,7 +46,22 @@
         });
     }
 
+    function readFile(path) {
+        return new Promise(function (resolve, reject) {
+            fs.readFile(path, 'utf-8', function (err, data) {
+                if (err) {
+                    console.error('read error');
+                    reject();
+                    throw err;
+                } else {
+                    resolve(data);
+                }
+            });
+        });
+    }
+
     ybq.fileExsist = fileExsist;
     ybq.listFiles = listFiles;
     ybq.readline = ybq_readline;
+    ybq.readFile = readFile;
 }());
