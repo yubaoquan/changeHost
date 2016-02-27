@@ -13,8 +13,13 @@
     text-align: center;
     font-weight: bolder;
 }
+.g-sd {
+    float: right;
+    padding: 20px;
+}
 .m-hosts {
     padding: 20px;
+    overflow: hidden;
 }
 .m-hosts .item {
     border: 2px solid #33CC8F;
@@ -37,5 +42,50 @@
     clear: both;
     padding: 20px;
     line-height: 20px;
+    font-size: 15px;
+}
+
+.m-hostedit {
+    display: none;
+    text-align: center;
+    border-top: 2px dotted green;
+    border-bottom: 2px dotted green;
+    padding: 10px 0;
+}
+
+.m-hostedit div {
+    margin: 10px 0;
+}
+
+.m-hostedit label {
+    font-weight: bold;
+    height: 30px;
+    font-size: 20px;
+}
+
+.m-hostedit input {
+    font-size: 20px;
+}
+
+.m-hostedit textarea {
+    width: 650px;
+    min-height: 400px;
+    font-size: 20px;
+    line-height: 22px;
+    padding: 5px;
+}
+
+.m-hostedit .btnwrapper button {
+    margin: 0 5px;
+}
+
+.u-btn {
+    padding: 5px;
+    height: 30px;
+    background-color: #17A4C7;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-family: Microsoft yahei;
     font-size: 15px;
 }

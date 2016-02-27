@@ -60,8 +60,37 @@
         });
     }
 
+    function makeFile(args) {
+        return new Promise(function (resolve, reject) {
+            fs.open(args.path, 'wx', function(err ,fd) {
+                if (err) {
+                    reject(err)
+                    console.info('打开失败');
+                    console.info(err);
+                } else {
+                    writeFile(fd, args.content)
+                    .then(resolve)
+                    .catch(reject);
+                }
+            })
+        });
+    }
+
+    function writeFile(fd, data) {
+        return new Promise(function(resolve, reject) {
+            fs.write(fd, data, 'utf-8', function(err, data) {
+                if (err) {
+                    reject();
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+
     ybq.fileExsist = fileExsist;
     ybq.listFiles = listFiles;
     ybq.readline = ybq_readline;
     ybq.readFile = readFile;
+    ybq.makeFile = makeFile;
 }());

@@ -1,26 +1,24 @@
 (function() {
 
     var selectedHost,
-        currentHostName = 'x';
-    const basePath = 'C:/Windows/System32/drivers/etc';
+        currentHostName = 'x',
+        elements = {};
+    const basePath = 'C:/Windows/System32/drivers/etc',
+          hostFolder = 'host';
     /**
      * 显示当前目录下的hosts文件
      * @param  {Array} hostsNames 文件名数组
      * @return {[type]}            [description]
      */
     function showHosts(path) {
-        var ul = $('.m-hosts ul');
         ybq.listFiles(path)
         .then(function(files) {
             files.forEach(function(item, index) {
-                if (item.indexOf('hosts_') != 0) {
-                    return;
-                }
-                var jqItem = $(`<li class="item">${item}</li>`);
+                var jqItem = $(`<li class="item">${item.replace(/\.txt/i, '')}</li>`);
                 jqItem.on('click', function() {
                     onHostsClick(jqItem);
                 });
-                ul.append(jqItem);
+                elements.hostItemContainer.append(jqItem);
             });
         });
     }
@@ -29,10 +27,10 @@
      * @param  {jq} jqItem   图标节点的jq对象
      */
     function onHostsClick(jqItem) {
-        var hostName = jqItem.text().substr(6);
-        ybq.setHosts(hostName, function(configData) {
+        var hostName = jqItem.text();
+        ybq.setHosts(`${hostFolder}/${hostName}`, function(configData) {
             ybq.showTip(`已将host切换到${hostName}`);
-            selectedHost.removeClass('selected');
+            selectedHost && selectedHost.removeClass('selected');
             jqItem.addClass('selected');
             selectedHost = jqItem;
             showHostData(configData);
@@ -56,28 +54,108 @@
      * @return {[type]}          [description]
      */
     function findSelectedHost() {
+        ybq.readFile('C:/Windows/System32/drivers/etc/hosts')
+        .then(function(data) {
+            showHostData(data);
+        });
+
         ybq.readline('C:/Windows/System32/drivers/etc/hosts', 0, function(line) {
             line = line.replace(/\s+/g, '');
-            if (line.length < 2) {
-                ybq.showTip(`hosts的第一行备注不合法, 请检查`);
+            if (line.length < 2 || line[0] != '#') {
                 return;
             }
             currentHostName = line.substr(1);
             $('.m-hosts li').each(function(index, item) {
                 item = $(item);
-                var host = item.text().substr(6);
-                if (currentHostName == host) {
+                if (currentHostName == item.text()) {
                     item.addClass('selected');
                     selectedHost = item;
                 }
             });
         });
-        ybq.readFile('C:/Windows/System32/drivers/etc/hosts')
-        .then(function(data) {
-            showHostData(data);
+    }
+
+    function initElements() {
+        elements.hostEdit = $('.m-hostedit');
+        elements.hostNameInput = $('.m-hostedit input');
+        elements.hostContentInput = $('.m-hostedit textarea');
+        elements.hostItemContainer = $('.m-hosts ul');
+    }
+    /**
+     * 初始化添加host 按钮的回调
+     * @return {[type]} [description]
+     */
+    function initListeners() {
+        $('#add-host').click(function() {
+            $('.m-hostedit').show();
+        });
+
+        $('.m-hostedit .j-confirm').click(function() {
+            if (!validateHostData()) {
+                return;
+            }
+            makeHostFile({
+                name: elements.hostNameInput.val(),
+                content: elements.hostContentInput.val()
+            });
+        });
+
+        $('.m-hostedit .j-reset').click(cleanInput);
+
+        $('.m-hostedit .j-cancel').click(function() {
+            cancelEditHost();
         });
     }
 
-    showHosts(basePath);
+    function cancelEditHost() {
+        cleanInput();
+        elements.hostEdit.hide();
+    }
+
+    function cleanInput() {
+        elements.hostNameInput.val('');
+        elements.hostContentInput.val('');
+    }
+
+    function validateHostData() {
+        var hostName = elements.hostNameInput.val(),
+            hostContent = elements.hostContentInput.val();
+
+        if (!hostName.length) {
+            ybq.showTip('请填写host名称', true);
+            return false;
+        }
+
+        return true;
+    }
+
+    function makeHostFile(args) {
+        args.path = `${hostFolder}/${args.name}.txt`;
+        args.content = `#${args.name}\r\n${args.content}`;
+
+        ybq.makeFile(args)
+        .then(function() {
+            console.info('写入成功');
+            ybq.showTip(`host文件${args.name}创建成功`);
+            var jqItem = $(`<li class="item">${args.name}</li>`);
+            jqItem.on('click', function() {
+                onHostsClick(jqItem);
+            });
+            elements.hostItemContainer.append(jqItem);
+            cancelEditHost();
+        })
+        .catch(function(err) {
+            console.info('写入失败');
+            if (err.code == 'EEXIST') {
+                ybq.showTip(`host${args.name}已存在`, true);
+            } else {
+                ybq.showTip(`host写入失败`, true);
+            }
+        });
+    }
+
+    showHosts(hostFolder);
     findSelectedHost();
+    initElements();
+    initListeners();
 }());
