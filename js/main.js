@@ -14,7 +14,7 @@
         ybq.listFiles(path)
         .then(function(files) {
             files.forEach(function(item, index) {
-                var jqItem = $(`<li class="item">${item.replace(/\.txt/i, '')}</li>`);
+                var jqItem = $(`<li class="item" data-filename='${item}'>${item.replace(/\.txt/i, '')}</li>`);
                 jqItem.on('click', function() {
                     onHostsClick(jqItem);
                 });
@@ -27,7 +27,7 @@
      * @param  {jq} jqItem   图标节点的jq对象
      */
     function onHostsClick(jqItem) {
-        var hostName = jqItem.text();
+        var hostName = jqItem.data('filename');
         ybq.setHosts(`${hostFolder}/${hostName}`, function(configData) {
             ybq.showTip(`已将host切换到${hostName}`);
             selectedHost && selectedHost.removeClass('selected');
