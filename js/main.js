@@ -137,7 +137,7 @@
         .then(function() {
             console.info('写入成功');
             ybq.showTip(`host文件${args.name}创建成功`);
-            var jqItem = $(`<li class="item">${args.name}</li>`);
+            var jqItem = $(`<li class="item" data-filename='${args.name}.txt'>${args.name}</li>`);
             jqItem.on('click', function() {
                 onHostsClick(jqItem);
             });
