@@ -158,4 +158,6 @@
     findSelectedHost();
     initElements();
     initListeners();
+
+    ybq.windowBehavior.init();
 }());
